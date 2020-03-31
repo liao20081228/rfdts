@@ -57,6 +57,8 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 	: __tsas(tsas)
 	, __wrpool(wrpool)
 	, __queues(ques)
+	, __device_attr(new ibv_device_attr)
+	, __port_attr(new ibv_port_attr)
 {
 	__open_context();
 }
@@ -65,7 +67,10 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 template<typename T>
 rfts::commu<T>::~commu(void) noexcept
 {
-
+	if (__port_attr)
+		delete __port_attr;
+	if (__device_attr)
+		delete __device_attr;
 	if (__context)
 	{
 		if (ibv_close_device(__context))
@@ -78,10 +83,19 @@ rfts::commu<T>::~commu(void) noexcept
 template<typename T>
 void rfts::commu<T>::__query_port_attr(void) noexcept
 {
-
+	memset(__port_attr, 0, sizeof(ibv_port_attr));
+	if (ibv_query_port(__context, __port_attr))
+		PEI(rfts::commu::__query_port_attr);
 }
 
 
+template<typename T>
+void rfts::commu<T>::__query_device_attr(void) noexcept
+{
+	memset(__device_attr, 0, sizeof(ibv_device_attr));
+	if (ibv_query_device(__context, __device_attr))
+
+}
 
 
 
