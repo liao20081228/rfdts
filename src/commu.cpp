@@ -24,7 +24,10 @@ private:
 	ibv_qp*			__qp;			//QP
 	ibv_ah			__ah;			//地址句柄
 	ibv_device_attr*	__device_attr;		//设备属性
+	ibv_device_attr_ex*	__device_attr_ex;	//设备扩展属性
 	ibv_port_attr*		__port_attr;		//端口属性
+private:
+
 private:
 	std::thread		__th_send_or_recv;	//发送或接收线程
 	std::thread		__th_comp;		//完成线程
@@ -45,8 +48,8 @@ public:
 	commu& operator = (commu&&) = delete;
 private:
 	void __open_context(void) noexcept;//根据__tsas中指定的设备名打开设备上下文
-	void __query_device_attr(void) noexcept;
-	void __query_port_attr(void) noexcept;
+	void __query_device_attr_and_ex_attr(void) noexcept;//查询设备属性和扩展属性
+	void __query_port_attr(void) noexcept;//查询端口属性
 };
 
 }
@@ -58,6 +61,7 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 	, __wrpool(wrpool)
 	, __queues(ques)
 	, __device_attr(new ibv_device_attr)
+	, __device_attr_ex(new ibv_device_attr_ex)
 	, __port_attr(new ibv_port_attr)
 {
 	__open_context();
@@ -69,6 +73,8 @@ rfts::commu<T>::~commu(void) noexcept
 {
 	if (__port_attr)
 		delete __port_attr;
+	if (__device_attr_ex)
+		delete __device_attr_ex;
 	if (__device_attr)
 		delete __device_attr;
 	if (__context)
@@ -94,7 +100,22 @@ void rfts::commu<T>::__query_device_attr(void) noexcept
 {
 	memset(__device_attr, 0, sizeof(ibv_device_attr));
 	if (ibv_query_device(__context, __device_attr))
+	{
+		PEI(rfts::commu::__query_port_attr::ibv_query_device);
+		~commu();
+	}
+}
 
+
+template<typename T>
+void rfts::commu<T>::__query_device_attr(void) noexcept
+{
+	memset(__device_attr, 0, sizeof(ibv_device_attr));
+	if (ibv_query_device(__context, __device_attr))
+	{
+		PEI(rfts::commu::__query_port_attr::ibv_query_device);
+		~commu();
+	}
 }
 
 
