@@ -96,7 +96,7 @@ void rfts::commu<T>::__query_port_attr(void) noexcept
 
 
 template<typename T>
-void rfts::commu<T>::__query_device_attr(void) noexcept
+void rfts::commu<T>::__query_device_attr_and_ex_attr(void) noexcept
 {
 	memset(__device_attr, 0, sizeof(ibv_device_attr));
 	if (ibv_query_device(__context, __device_attr))
@@ -104,16 +104,10 @@ void rfts::commu<T>::__query_device_attr(void) noexcept
 		PEI(rfts::commu::__query_port_attr::ibv_query_device);
 		~commu();
 	}
-}
 
-
-template<typename T>
-void rfts::commu<T>::__query_device_attr(void) noexcept
-{
-	memset(__device_attr, 0, sizeof(ibv_device_attr));
-	if (ibv_query_device(__context, __device_attr))
+	if (ibv_query_device_ex(__context, __device_attr_ex))
 	{
-		PEI(rfts::commu::__query_port_attr::ibv_query_device);
+		PEI(rfts::commu::__query_port_attr::ibv_query_device_ex);
 		~commu();
 	}
 }
