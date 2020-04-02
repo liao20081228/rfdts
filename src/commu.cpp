@@ -17,6 +17,8 @@ private:
 	wr_pool<T>&		__wrpool;		//发送工作请求池
 	queues<T*>&		__queues;		//三个队列
 private:
+
+private:
 	ibv_context*		__context;		//设备上下文
 	ibv_comp_channel*	__comp_channel;		//完成通道
 	ibv_cq*			__cq;			//完成队列
@@ -26,7 +28,6 @@ private:
 	ibv_device_attr_ex*	__device_attr_ex;	//设备属性和扩展属性
 	ibv_port_attr*		__port_attr;		//端口属性
 private:
-
 private:
 	std::thread		__th_send_or_recv;	//发送或接收线程
 	std::thread		__th_comp;		//完成线程
@@ -88,13 +89,23 @@ void rfts::commu<T>::__query_attr(void) noexcept
 	memset(__device_attr_ex, 0, sizeof(ibv_device_attr_ex));
 	if (ibv_query_device_ex(__context, nullptr, __device_attr_ex))
 	{
-		PEI(rfts::commu::__query_port_attr::ibv_query_device);
+		PEI(rfts::commu::__query_attr::ibv_query_device_ex);
 		~commu();
 	}
 	memset(__port_attr, 0, sizeof(ibv_port_attr));
 	if (__tsas.ib_port >= 1 && __tsas.ib_port <= __device_attr_ex->orig_attr.phys_port_cnt)
 	{
-
+		if (ibv_query_port(__context, __tsas.ib_port, __port_attr))
+		{
+			PEI(rfts::commu::__query_attr::ibv_query_port);
+			~commu();
+		}
+	}
+	else
+	{
+			errno = EINVAL;
+			PEI(rfts::commu::__query_attr);
+			~commu();
 	}
 }
 
