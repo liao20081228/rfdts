@@ -47,8 +47,7 @@ public:
 	commu& operator = (commu&&) = delete;
 private:
 	void __open_context(void) noexcept;//根据__tsas中指定的设备名打开设备上下文
-	void __query_device_attr_ex(void) noexcept;//查询设备属性和扩展属性
-	void __query_port_attr(void) noexcept;//查询端口属性
+	void __query_attr(void) noexcept;//查询设备属性和端口属性
 };
 
 }
@@ -82,23 +81,20 @@ rfts::commu<T>::~commu(void) noexcept
 
 
 
-template<typename T>
-void rfts::commu<T>::__query_port_attr(void) noexcept
-{
-	memset(__port_attr, 0, sizeof(ibv_port_attr));
-	if (ibv_query_port_ex(__context, __port_attr_ex))
-		PEI(rfts::commu::__query_port_attr);
-}
-
 
 template<typename T>
-void rfts::commu<T>::__query_device_attr_ex(void) noexcept
+void rfts::commu<T>::__query_attr(void) noexcept
 {
-	memset(__device_attr_ex, 0, sizeof(ibv_device_attr));
+	memset(__device_attr_ex, 0, sizeof(ibv_device_attr_ex));
 	if (ibv_query_device_ex(__context, nullptr, __device_attr_ex))
 	{
 		PEI(rfts::commu::__query_port_attr::ibv_query_device);
 		~commu();
+	}
+	memset(__port_attr, 0, sizeof(ibv_port_attr));
+	if (__tsas.ib_port >= 1 && __tsas.ib_port <= __device_attr_ex->orig_attr.phys_port_cnt)
+	{
+
 	}
 }
 
