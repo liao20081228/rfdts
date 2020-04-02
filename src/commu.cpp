@@ -48,7 +48,7 @@ public:
 	commu& operator = (commu&&) = delete;
 private:
 	void __open_context(void) noexcept;//根据__tsas中指定的设备名打开设备上下文
-	void __query_device_attr_and_ex_attr(void) noexcept;//查询设备属性和扩展属性
+	void __query_device_attr(void) noexcept;//查询设备属性和扩展属性
 	void __query_port_attr(void) noexcept;//查询端口属性
 };
 
@@ -105,7 +105,7 @@ void rfts::commu<T>::__query_device_attr_and_ex_attr(void) noexcept
 		~commu();
 	}
 
-	if (ibv_query_device_ex(__context, __device_attr_ex))
+	if (ibv_query_device_ex(__context, nullptr, __device_attr_ex))
 	{
 		PEI(rfts::commu::__query_port_attr::ibv_query_device_ex);
 		~commu();
