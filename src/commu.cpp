@@ -63,6 +63,7 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 	, __port_attr(new ibv_port_attr)
 {
 	__open_context();
+	__query_attr();
 }
 
 
