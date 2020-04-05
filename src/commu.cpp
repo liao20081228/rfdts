@@ -49,7 +49,8 @@ public:
 private:
 	void __open_context(void) noexcept;//根据__tsas中指定的设备名打开设备上下文
 	void __query_attr(void) const noexcept;//查询设备属性和端口属性
-	void __check_mtu(void) const noexcept;
+	void __check_mtu(void) const noexcept; //检查MTU
+	void __create_basic_resource(void) noexcept;//创建基本资源
 };
 
 }
@@ -84,13 +85,12 @@ rfts::commu<T>::~commu(void) noexcept
 }
 
 
-
 template<typename T>
 void rfts::commu<T>::__check_mtu(void) const noexcept
 {
 	if (__port_attr->active_mtu < __tsas.get_elesize())
 	{
-		errno = 
+		errno = ENOSYS;
 		PEI(rfts::commu::__check_mtu);
 		~commu();
 	}
