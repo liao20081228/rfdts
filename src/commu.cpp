@@ -52,6 +52,7 @@ private:
 	void __query_attr(void) const noexcept;//查询设备属性和端口属性
 	void __check_mtu(void) const noexcept; //检查MTU
 	void __create_basic_resource(void) noexcept;//创建基本资源
+	void __create_qp(void) noexcept;
 };
 
 }
