@@ -75,6 +75,8 @@ inline rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T
 template<typename T>
 inline rfts::commu<T>::~commu(void) noexcept
 {
+	if (__mr && ibv_dereg_mr(__mr))
+		PEIE(rfts::commu::~commu::ibv_dereg_mr);
 	if (__pd && ibv_dealloc_pd(__pd))
 		PEIE(rfts::commu::~commu::ibv_dealloc_pd);
 	if (__port_attr)
@@ -95,7 +97,13 @@ inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 		PEI(rfts::commu::__create_basic_resource::ibv_alloc_pd);
 		~commu();
 	}
-	__mr
+	__mr = ibv_reg_mr(__pd, __wrpool.get_mrs_addr, __wrpool.get_mrs_length(),
+			IBV_ACCESS_LOCAL_WRITE);
+	if (!__mr)
+	{
+		PEI(rfts::commu::__create_basic_resource::ibv_reg_mr);
+		~commu();
+	}
 
 }
 
