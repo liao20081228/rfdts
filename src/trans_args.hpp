@@ -59,13 +59,13 @@ struct trans_args//传输参数
 			tfreq,				//传输频率
 			kind_per_sensor,		//一个探头产生几种数据
 			sensor_num_per_node,		//每个节点有几个探头
-			node_num	= 1,		//总共多少个节点
-			ele_size_scale	= 2,		//注册内存分片冗余比例
-			ele_num_scale	= 2;		//注册内存数量冗余比例
-	float		th_wait_time,			//线程等待时间,us
+			node_num	= 1;		//总共多少个节点
+	float		ele_size_scale	= 2,		//注册内存分片冗余比例
+			ele_num_scale	= 2,		//注册内存数量冗余比例
+			th_wait_time,			//线程等待时间,us
 			data_handle_time,		//数据处理时间,us
-			sys_lat		= 10;		//系统延时,us
-	float		pre_recv_scale  = 0.7;		//预发布接收工作的比例
+			sys_lat		= 10,		//系统延时,us
+			pre_rq_scale  = 0.7;		//预发布接收工作请求的比例
 
 	char*		dev_name	= nullptr;	//RDMA设备名
 	char*		servername	= nullptr;	//服务端的IP或域名
@@ -77,7 +77,7 @@ struct trans_args//传输参数
 //		, th_num(ceil((__th_wait_time + __data_handle_time) / 1000000 *
 //				__tfreq * __node_num))
 	inline friend std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept;
-	inline uint64_t get_elesize(void)const noexcept
+	inline uint64_t get_elesize(void) const noexcept;
 	uint32_t get_elenum(void) const noexcept;
 };
 
@@ -90,6 +90,14 @@ struct trans_args//传输参数
 
 
 
+
+
+inline uint64_t trans_args::get_elesize(void) const noexcept
+{
+	return ceil(static_cast<float>(afreq) / tfreq * size_per_data *
+		kind_per_sensor * sensor_num_per_node * node_num *
+		ele_size_scale);
+}
 
 inline std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept
 	{
