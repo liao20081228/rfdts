@@ -62,11 +62,8 @@ public:
 
 template<typename T>
 rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
-	: __elesize(ceil(static_cast<float>(tsas.afreq) / tsas.tfreq) *
-		tsas.size_per_data * tsas.kind_per_sensor * tsas.sensor_num_per_node *
-		tsas.node_num *  tsas.ele_size_scale)
-	, __elenum(ceil(tsas.tfreq * tsas.sys_lat / 1000000 * tsas.node_num *
-			tsas.ele_num_scale))
+	: __elesize(tsas.get_elesize())
+	, __elenum(ceil(tsas.get_elenum())
 	, __rqnum(__elenum + 1)
 	, __length(__elesize * __elenum)
 	, __addr(new unsigned char[__length]())
