@@ -48,7 +48,8 @@ public:
 	commu& operator = (commu&&) = delete;
 private:
 	void __open_context(void) noexcept;//根据__tsas中指定的设备名打开设备上下文
-	void __query_attr(void) noexcept;//查询设备属性和端口属性
+	void __query_attr(void) const noexcept;//查询设备属性和端口属性
+	void __check_mtu(void) const noexcept;
 };
 
 }
@@ -64,6 +65,7 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 {
 	__open_context();
 	__query_attr();
+	__check_mtu();
 }
 
 
@@ -83,9 +85,14 @@ rfts::commu<T>::~commu(void) noexcept
 
 
 
+template<typename T>
+void rfts::commu<T>::__check_mtu(void) const noexcept
+{
+	
+}
 
 template<typename T>
-void rfts::commu<T>::__query_attr(void) noexcept
+void rfts::commu<T>::__query_attr(void) const noexcept
 {
 	memset(__device_attr_ex, 0, sizeof(ibv_device_attr_ex));
 	if (ibv_query_device_ex(__context, nullptr, __device_attr_ex))
