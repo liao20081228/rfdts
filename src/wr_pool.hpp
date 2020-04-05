@@ -1,11 +1,14 @@
 #pragma once
 #ifndef HPP_RFTS_WORK_REQUEST_POOL_HPP
-	#define HPP_RFTS_WORK_REQUEST_POOL_HPP
+#define HPP_RFTS_WORK_REQUEST_POOL_HPP
+
 #include"sem.hpp"
 
+#define RFTS_SERVER
 #ifdef RFTS_SERVER
 	#define RFTS_MPSC
 #endif
+
 namespace rfts
 {
 
@@ -268,4 +271,3 @@ void rfts::wr_pool<T>::put(T* e) noexcept
 
 
 #endif /* end of include guard: HPP_RFTS_WORK_REQUEST_POOL_HPP */
-
