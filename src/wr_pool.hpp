@@ -66,7 +66,7 @@ public:
 template<typename T>
 rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 	: __elesize(tsas.get_elesize())
-	, __elenum(ceil(tsas.get_elenum())
+	, __elenum(tsas.get_elenum())
 	, __rqnum(__elenum + 1)
 	, __length(__elesize * __elenum)
 	, __addr(new unsigned char[__length]())
@@ -87,15 +87,15 @@ rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 	}
 	for(uint32_t i = 0; i < __elenum; ++i)
 	{
-		__sg_lists[i].addr = (uint64_t)(__addr + i * __elesize);
+		__sg_lists[i].addr = static_cast<uint64_t>((__addr + i * __elesize));
 		__sg_lists[i].length = __elesize;
 		__wrs[i].next = nullptr,
 		__wrs[i].sg_list = &__sg_lists[i],
 		__wrs[i].num_sge = 1,
 		
 		__rq[__rear++] = &__wrs[i];
-		if (__rear >= __rqnum)
-			__rear -= __rqnum;
+		//if (__rear >= __rqnum)
+			//__rear -= __rqnum;
 #ifdef RFTS_MPSC
 		__rq_flags[i].store(true, std::memory_order_relaxed);
 #endif /* #ifdef RFTS_MPSC */
