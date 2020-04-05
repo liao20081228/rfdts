@@ -76,12 +76,17 @@ inline rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T
 	__query_attr();
 	__check_mtu();
 	__create_basic_resource();
+	__create_qp();
 }
 
 
 template<typename T>
 inline rfts::commu<T>::~commu(void) noexcept
 {
+	if (__cq && ibv_destroy_cq(__cq))
+		PEIE(rfts::commu::~commu::ibv_destroy_cq);
+	if (__comp_channel && ibv_destroy_comp_channel(__comp_channel))
+		PEIE(rfts::commu::~commu::ibv_destroy_comp_channel);
 	if (__mr && ibv_dereg_mr(__mr))
 		PEIE(rfts::commu::~commu::ibv_dereg_mr);
 	if (__pd && ibv_dealloc_pd(__pd))
@@ -114,13 +119,13 @@ inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 		PEI(rfts::commu::__create_basic_resource::ibv_create_comp_channel);
 		~commu();
 	}
-	if (!(__cq = ibv_create_cq(__context, __device_attr_ex->orig_attr.max_cqe,
-		nullptr, __comp_channel, 0)))
+	if (!(__cq = ibv_create_cq(__context, __tsas.get_elenum() <
+		__device_attr_ex->orig_attr.max_cqe ? __tsas.get_elenum() :
+		__device_attr_ex->orig_attr.max_cqe, nullptr, __comp_channel, 0)))
 	{
 		PEI(rfts::commu::__create_basic_resource::ibv_create_cq);
 		~commu();
 	}
-
 }
 
 template<typename T>
