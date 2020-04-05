@@ -94,8 +94,8 @@ rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 		__wrs[i].num_sge = 1,
 		
 		__rq[__rear++] = &__wrs[i];
-		//if (__rear >= __rqnum)
-			//__rear -= __rqnum;
+		if (__rear >= __rqnum)
+			__rear -= __rqnum;
 #ifdef RFTS_MPSC
 		__rq_flags[i].store(true, std::memory_order_relaxed);
 #endif /* #ifdef RFTS_MPSC */
