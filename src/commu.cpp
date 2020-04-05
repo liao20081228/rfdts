@@ -100,6 +100,27 @@ inline rfts::commu<T>::~commu(void) noexcept
 		PEIE(rfts::commu::~commu::ibv_close_device);
 }
 
+template<typename T>
+inline void rfts::commu<T>::__create_qp(void) noexcept
+{
+	ibv_qp_init_attr qp_init_attr =
+	{
+		.qp_context = nullptr,
+		.send_cq = __cq,
+		.recv_cq = __cq,
+		.srq = nullptr,
+		.cap =
+		{
+			.max_send_wr = 256,
+			.max_recv_wr = 256 ,
+			.max_send_sge = 1,
+			.max_recv_sge = 1,
+			.max_inline_data = 512
+		},
+		.qp_type = IBV_QPT_UD,
+		.sq_sig_all = 0
+	};
+}
 
 template<typename T>
 inline void rfts::commu<T>::__create_basic_resource(void) noexcept
