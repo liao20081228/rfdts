@@ -24,6 +24,7 @@ private:
 	ibv_cq*			__cq;			//完成队列
 	ibv_pd*			__pd;			//保护域
 	ibv_qp*			__qp;			//QP
+	ibv_mr*			__mr;
 	ibv_ah			__ah;			//地址句柄
 	ibv_device_attr_ex*	__device_attr_ex;	//设备属性和扩展属性
 	ibv_port_attr*		__port_attr;		//端口属性
@@ -74,15 +75,14 @@ inline rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T
 template<typename T>
 inline rfts::commu<T>::~commu(void) noexcept
 {
+	if (__pd && ibv_dealloc_pd(__pd))
+		PEIE(rfts::commu::~commu::ibv_dealloc_pd);
 	if (__port_attr)
 		delete __port_attr;
 	if (__device_attr_ex)
 		delete __device_attr_ex;
-	if (__context)
-	{
-		if (ibv_close_device(__context))
-			PEIE(rfts::commu::~commu);
-	}
+	if (__context && ibv_close_device(__context))
+		PEIE(rfts::commu::~commu::ibv_close_device);
 }
 
 
@@ -95,6 +95,7 @@ inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 		PEI(rfts::commu::__create_basic_resource::ibv_alloc_pd);
 		~commu();
 	}
+	__mr
 
 }
 
