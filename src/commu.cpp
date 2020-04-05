@@ -125,7 +125,10 @@ inline void rfts::commu<T>::__create_qp(void) noexcept
 		PEI(rfts::commu::__create_qp::ibv_create_qp);
 		~commu();
 	}
-	
+	ibv_qp_attr qp_attr;
+	memset(&qp_attr, 0, sizeof(ibv_qp_attr));
+	memset(&qp_init_attr, 0, sizeof(ibv_qp_init_attr));
+	ibv_quert_qp(__qp, &qp_attr, &qp_init_attr);
 
 }
 
