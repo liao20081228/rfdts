@@ -35,7 +35,7 @@ public:
 }
 
 
-rfts::posix_sem::posix_sem(int pshared, unsigned int value) noexcept
+inline rfts::posix_sem::posix_sem(int pshared, unsigned int value) noexcept
 	: __sem(new sem_t)
 	, __name("")
 {
@@ -46,7 +46,7 @@ rfts::posix_sem::posix_sem(int pshared, unsigned int value) noexcept
 	}
 }
 
-rfts::posix_sem::posix_sem(const char* name, int oflag, mode_t mode,
+inline rfts::posix_sem::posix_sem(const char* name, int oflag, mode_t mode,
 			unsigned int value) noexcept
 	: __sem(sem_open(name, oflag, mode, value))
 	, __name(name)
@@ -55,7 +55,7 @@ rfts::posix_sem::posix_sem(const char* name, int oflag, mode_t mode,
 		PEIE(posix_sem::sem_open);
 }
 
-rfts::posix_sem::posix_sem(const std::string& name, int oflag, mode_t mode,
+inline rfts::posix_sem::posix_sem(const std::string& name, int oflag, mode_t mode,
 			unsigned int value) noexcept
 	: __sem(sem_open(name.c_str(), oflag, mode, value))
 	, __name(name)
@@ -64,7 +64,7 @@ rfts::posix_sem::posix_sem(const std::string& name, int oflag, mode_t mode,
 		PEIE(posix_sem::sem_open);
 }
 
-rfts::posix_sem::posix_sem(const std::string* name, int oflag, mode_t mode, 
+inline rfts::posix_sem::posix_sem(const std::string* name, int oflag, mode_t mode, 
 		unsigned int value) noexcept
 	: __sem(sem_open(name->c_str(), oflag, mode, value))
 	, __name(*name)
@@ -73,14 +73,14 @@ rfts::posix_sem::posix_sem(const std::string* name, int oflag, mode_t mode,
 		PEIE(posix_sem::sem_open);
 }
 
-rfts::posix_sem::posix_sem(posix_sem&& ref) noexcept
+inline rfts::posix_sem::posix_sem(posix_sem&& ref) noexcept
 	:__sem(ref.__sem)
 	, __name(ref.__name)
 {
 	ref.__sem = nullptr;
 }
 
-rfts::posix_sem::~posix_sem(void) noexcept
+inline rfts::posix_sem::~posix_sem(void) noexcept
 {
 	if (__sem)
 	{
@@ -96,20 +96,20 @@ rfts::posix_sem::~posix_sem(void) noexcept
 }
 
 
-void rfts::posix_sem::post(void) const noexcept
+inline void rfts::posix_sem::post(void) const noexcept
 {
 	if (sem_post(__sem))
 		PEIE(posix_sem::sem_post);
 }
 
-void rfts::posix_sem::wait(void) const noexcept
+inline void rfts::posix_sem::wait(void) const noexcept
 {
 	if (sem_wait(__sem))
 		PEIE(posix_sem::sem_wait);
 }
 
 
-int rfts::posix_sem::trywait(void) const noexcept
+inline int rfts::posix_sem::trywait(void) const noexcept
 {
 	if (sem_trywait(__sem))
 	{
@@ -123,7 +123,7 @@ int rfts::posix_sem::trywait(void) const noexcept
 	return 0;
 }
 
-int rfts::posix_sem::timewait(const struct timespec* abs_timeout) const noexcept
+inline int rfts::posix_sem::timewait(const struct timespec* abs_timeout) const noexcept
 {
 	if (sem_timedwait(__sem,abs_timeout))
 	{
