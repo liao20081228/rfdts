@@ -128,8 +128,11 @@ inline void rfts::commu<T>::__create_qp(void) noexcept
 	ibv_qp_attr qp_attr;
 	memset(&qp_attr, 0, sizeof(ibv_qp_attr));
 	memset(&qp_init_attr, 0, sizeof(ibv_qp_init_attr));
-	ibv_quert_qp(__qp, &qp_attr, &qp_init_attr);
+	ibv_quert_qp(__qp, &qp_attr, IBV_QP_CAP, &qp_init_attr);
+	if (qp_init_attr.cap.max_inline_data >= __tsas.get_elenum())
+	{
 
+	}
 }
 
 template<typename T>
