@@ -122,8 +122,11 @@ inline void rfts::commu<T>::__create_qp(void) noexcept
 	};
 	if (!(__qp = ibv_create_qp(__pd, &qp_init_attr)))
 	{
-
+		PEI(rfts::commu::__create_qp::ibv_create_qp);
+		~commu();
 	}
+	
+
 }
 
 template<typename T>
@@ -268,14 +271,14 @@ void rfts::commu<T>::__send_or_recv(void) noexcept
 {
 	T* bad_wr;
 #ifdef RFTS_SERVER
-	uint32_t pre_recv_wr = ceil(__queues.nosend_or_recving.__rqnum * __tsas.pre_recv_scale);
-	pre_recv_wr = pre_recv_wr > __device_attr->max_qp_wr ? __device_attr->max_qp_wr :
-		pre_recv_wr;
+	uint32_t pre_recv_wr = ceil(__queues.nosend_or_recving.__rqnum * __tsas.pre_rr_scale);
+	pre_recv_wr = pre_recv_wr > __device_attr_ex->orig_attr.max_qp_wr ?
+		__device_attr_ex->orig_attr.max_qp_wr : pre_recv_wr;
 	for(uint32_t i = 0; i < pre_recv_wr; ++i)
 	{
 		T*  recv_wr= __wrpool.get();
 		if (ibv_post_recv(__qp, recv_wr, &bad_wr))
-			PERR(rfts::commu::__send_or_recv);
+			PEIE(rfts::commu::__send_or_recv);
 		__queues.nosend_or_recving.put(recv_wr);
 	}
 	while(start.load(std::memory_order_acquire))
@@ -283,7 +286,7 @@ void rfts::commu<T>::__send_or_recv(void) noexcept
 		__sem.wait();
 		T*  recv_wr= __wrpool.get();
 		if (ibv_post_recv(__qp, recv_wr, &bad_wr))
-			PERR(rfts::commu::__send_or_recv);
+			PEIE(rfts::commu::__send_or_recv);
 		__queues.nosend_or_recving.put(recv_wr);
 	}
 	timespec	timeout = {0,0};
@@ -293,7 +296,7 @@ void rfts::commu<T>::__send_or_recv(void) noexcept
 	{
 		T*  recv_wr= __wrpool.get();
 		if (ibv_post_recv(__qp, recv_wr, &bad_wr))
-			PERR(rfts::commu::__send_or_recv);
+			PEIE(rfts::commu::__send_or_recv);
 		__queues.nosend_or_recving.put(recv_wr);
 		clock_gettime(CLOCK_REALTIME, &timeout);
 		timeout.tv_nsec += __tsas.sys_lat * 2 * 1000;
@@ -303,14 +306,14 @@ void rfts::commu<T>::__send_or_recv(void) noexcept
 	{
 		T* send_wr= __queues.nosend_or_recving.get();
 		if(ibv_post_send(__qp, send_wr, &bad_wr))
-			PERR(rfts::commu::__send_or_recv);
+			PEIE(rfts::commu::__send_or_recv);
 		__queues.sending_or_nohand.put(send_wr);
 	}
 	while(__queues.nosend_or_recving.get_rq_elenum())
 	{
 		T* send_wr= __queues.nosend_or_recving.get();
 		if(ibv_post_send(__qp, send_wr, &bad_wr))
-			PERR(rfts::commu::__send_or_recv);
+			PEIE(rfts::commu::__send_or_recv);
 		__queues.sending_or_nohand.put(send_wr);
 	}
 #endif
