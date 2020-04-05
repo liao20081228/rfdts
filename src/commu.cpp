@@ -115,11 +115,12 @@ inline void rfts::commu<T>::__create_qp(void) noexcept
 			.max_recv_wr = 256 ,
 			.max_send_sge = 1,
 			.max_recv_sge = 1,
-			.max_inline_data = 512
+			.max_inline_data = __port_attr->active_mtu
 		},
 		.qp_type = IBV_QPT_UD,
 		.sq_sig_all = 0
 	};
+	if (!(__qp = ibv_create_qp(__pd, &qp_init_attr)))
 }
 
 template<typename T>
