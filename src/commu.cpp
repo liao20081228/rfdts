@@ -92,7 +92,8 @@ inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 	__pd = ibv_alloc_pd(__context);
 	if (!__pd)
 	{
-		
+		PEI(rfts::commu::__create_basic_resource::ibv_alloc_pd);
+		~commu();
 	}
 
 }
