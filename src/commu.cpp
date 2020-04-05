@@ -121,6 +121,9 @@ inline void rfts::commu<T>::__create_qp(void) noexcept
 		.sq_sig_all = 0
 	};
 	if (!(__qp = ibv_create_qp(__pd, &qp_init_attr)))
+	{
+
+	}
 }
 
 template<typename T>
