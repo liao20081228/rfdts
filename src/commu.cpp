@@ -88,7 +88,12 @@ rfts::commu<T>::~commu(void) noexcept
 template<typename T>
 void rfts::commu<T>::__check_mtu(void) const noexcept
 {
-	
+	if (__port_attr->active_mtu < __elesize(ceil(static_cast<float>(__tsas.afreq) /
+		__tsas.tfreq) *__tsas.size_per_data * __tsas.kind_per_sensor *
+		__tsas.sensor_num_per_node  *__tsas.node_num *  __tsas.ele_size_scale))
+	{
+
+	}
 }
 
 template<typename T>
