@@ -67,6 +67,7 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 	__open_context();
 	__query_attr();
 	__check_mtu();
+	__create_basic_resource();
 }
 
 
@@ -84,6 +85,12 @@ rfts::commu<T>::~commu(void) noexcept
 	}
 }
 
+
+template<typename T>
+void rfts::commu<T>::__create_basic_resource(void) noexcept
+{
+
+}
 
 template<typename T>
 void rfts::commu<T>::__check_mtu(void) const noexcept

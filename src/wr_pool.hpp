@@ -167,69 +167,69 @@ rfts::wr_pool<T>::~wr_pool(void) noexcept
 
 
 template<typename T>
-void* rfts::wr_pool<T>::get_mrs_addr(void) const noexcept
+inline void* rfts::wr_pool<T>::get_mrs_addr(void) const noexcept
 {
 	return __addr;
 }
 
 
 template<typename T>
-uint64_t rfts::wr_pool<T>::get_mrs_length(void) const noexcept
+inline uint64_t rfts::wr_pool<T>::get_mrs_length(void) const noexcept
 {
 	return __length;
 }
 
 
 template<typename T>
-void* rfts::wr_pool<T>::get_wrs_addr(void) const noexcept
+inline void* rfts::wr_pool<T>::get_wrs_addr(void) const noexcept
 {
 	return __wrs;
 }
 
 
 template<typename T>
-uint64_t rfts::wr_pool<T>::get_wrs_length(void) const noexcept
+inline uint64_t rfts::wr_pool<T>::get_wrs_length(void) const noexcept
 {
 	return sizeof(T) * __elenum;
 }
 
 template<typename T>
-void* rfts::wr_pool<T>::get_sgs_addr(void) const noexcept
+inline void* rfts::wr_pool<T>::get_sgs_addr(void) const noexcept
 {
 	return __sg_lists;
 }
 
 
 template<typename T>
-uint64_t rfts::wr_pool<T>::get_sgs_length(void) const noexcept
+inline uint64_t rfts::wr_pool<T>::get_sgs_length(void) const noexcept
 {
 	return sizeof(ibv_sge) * __elenum;
 }
 
 #ifdef RFTS_MPSC
 template<typename T>
-void* rfts::wr_pool<T>::get_flags_addr(void) const noexcept
+inline void* rfts::wr_pool<T>::get_flags_addr(void) const noexcept
 {
 	return __rq_flags;
 }
 
 
 template<typename T>
-uint64_t rfts::wr_pool<T>::get_flags_length(void) const noexcept
+inline uint64_t rfts::wr_pool<T>::get_flags_length(void) const noexcept
 {
 	return sizeof(std::atomic<bool>) * __rqnum;
 }
 #endif
 
 template<typename T>
-void* rfts::wr_pool<T>::get_rq_addr(void) const noexcept
+inline void* rfts::wr_pool<T>::get_rq_addr(void) const noexcept
 {
 	return __rq;
 }
 
 
 template<typename T>
-uint64_t rfts::wr_pool<T>::get_rq_length(void) const noexcept
+inline uint64_t rfts::wr_pool<T>::get_rq_length(void) const noexcept
 {
 	return sizeof(T*) * __rqnum;
 }

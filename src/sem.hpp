@@ -29,7 +29,7 @@ public:
 	void wait(void) const noexcept;
 	int  trywait(void) const noexcept;
 	int  timewait(const struct timespec* abs_timeout) const noexcept;
-	uint32_t  getvalue(int* val = nullptr) const noexcept;
+	uint32_t  getvalue(void) const noexcept;
 };
 
 }
@@ -137,12 +137,10 @@ int rfts::posix_sem::timewait(const struct timespec* abs_timeout) const noexcept
 	return 0;
 }
 
-unsigned int rfts::posix_sem::getvalue(int* const val) const noexcept
+inline unsigned int rfts::posix_sem::getvalue(void) const noexcept
 {
 	int n  = 0;
 	sem_getvalue(__sem, &n);
-	if (val)
-		*val=n;
 	return n;
 }
 
