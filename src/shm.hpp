@@ -121,7 +121,7 @@ rfts::posix_shm::posix_shm(const std::string* name, size_t size, int oflag, mode
 	}
 }
 
-rfts::posix_shm::posix_shm(posix_shm&& ref) noexcept
+inline rfts::posix_shm::posix_shm(posix_shm&& ref) noexcept
 	: __name(ref.__name)
 	, __fd(ref.__fd)
 	, __addr(ref.__addr)
@@ -133,7 +133,7 @@ rfts::posix_shm::posix_shm(posix_shm&& ref) noexcept
 }
 
 
-rfts::posix_shm::~posix_shm(void) noexcept
+inline rfts::posix_shm::~posix_shm(void) noexcept
 {
 	if (!__addr)
 		return;
@@ -144,23 +144,24 @@ rfts::posix_shm::~posix_shm(void) noexcept
 }
 
 
-void* rfts::posix_shm::getaddr(void) const noexcept
+inline void* rfts::posix_shm::getaddr(void) const noexcept
 {
 	return __addr;
 }
 
-size_t rfts::posix_shm::getlength(void) const noexcept
+inline size_t rfts::posix_shm::getlength(void) const noexcept
 {
 	return  __length;
 }
-void rfts::posix_shm::clear(void) noexcept
+
+inline void rfts::posix_shm::clear(void) noexcept
 {
 	memset(__addr, 0, __length);
 	__cur.store(0, std::memory_order_release);
 }
 
 
-int rfts::posix_shm::sync(int flags) const noexcept
+inline int rfts::posix_shm::sync(int flags) const noexcept
 {
 	int ret = msync(__addr, __length, flags);
 	if (ret && errno == EINVAL)
@@ -212,7 +213,7 @@ size_t rfts::posix_shm::seek(off_t offset, int whence) noexcept
 	}
 }
 
-size_t rfts::posix_shm::tell(void) const noexcept
+inline size_t rfts::posix_shm::tell(void) const noexcept
 {
 	return __cur.load(std::memory_order_acquire);
 }
@@ -259,12 +260,12 @@ void rfts::posix_shm::__access(void* buf, size_t buf_len, size_t nbytes, bool re
 			std::memory_order_acquire));
 }
 
-void rfts::posix_shm::read(void* buf, size_t buf_len, size_t nbytes, bool reset) noexcept
+inline void rfts::posix_shm::read(void* buf, size_t buf_len, size_t nbytes, bool reset) noexcept
 {
 	__access(buf, buf_len, nbytes, reset, true);
 }
 
-void rfts::posix_shm::write(void* buf, size_t buf_len, size_t nbytes, bool reset) noexcept
+inline void rfts::posix_shm::write(void* buf, size_t buf_len, size_t nbytes, bool reset) noexcept
 {
 	__access(buf, buf_len, nbytes, reset, false);
 }

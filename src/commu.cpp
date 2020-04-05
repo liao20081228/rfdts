@@ -57,7 +57,7 @@ private:
 
 
 template<typename T>
-rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& ques) noexcept
+inline rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& ques) noexcept
 	: __tsas(tsas)
 	, __wrpool(wrpool)
 	, __queues(ques)
@@ -72,7 +72,7 @@ rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T*>& que
 
 
 template<typename T>
-rfts::commu<T>::~commu(void) noexcept
+inline rfts::commu<T>::~commu(void) noexcept
 {
 	if (__port_attr)
 		delete __port_attr;
@@ -87,18 +87,18 @@ rfts::commu<T>::~commu(void) noexcept
 
 
 template<typename T>
-void rfts::commu<T>::__create_basic_resource(void) noexcept
+inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 {
 	__pd = ibv_alloc_pd(__context);
 	if (!__pd)
 	{
-
+		
 	}
 
 }
 
 template<typename T>
-void rfts::commu<T>::__check_mtu(void) const noexcept
+inline void rfts::commu<T>::__check_mtu(void) const noexcept
 {
 	if (__port_attr->active_mtu < __tsas.get_elesize())
 	{
@@ -109,7 +109,7 @@ void rfts::commu<T>::__check_mtu(void) const noexcept
 }
 
 template<typename T>
-void rfts::commu<T>::__query_attr(void) const noexcept
+inline void rfts::commu<T>::__query_attr(void) const noexcept
 {
 	memset(__device_attr_ex, 0, sizeof(ibv_device_attr_ex));
 	if (ibv_query_device_ex(__context, nullptr, __device_attr_ex))

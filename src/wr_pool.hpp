@@ -107,7 +107,7 @@ rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 }
 
 template<typename T>
-rfts::wr_pool<T>::wr_pool(wr_pool&& ref) noexcept
+inline rfts::wr_pool<T>::wr_pool(wr_pool&& ref) noexcept
 	: __elesize(ref.__elesize)
 	, __elenum(ref.__elenum)
 	, __rqnum(ref.__rqnum)
@@ -235,7 +235,7 @@ inline uint64_t rfts::wr_pool<T>::get_rq_length(void) const noexcept
 }
 
 template<typename T>
-T* rfts::wr_pool<T>::get(void) noexcept
+inline T* rfts::wr_pool<T>::get(void) noexcept
 {
 	T* temp = __rq[__front];
 	__rq[__front] = nullptr;
@@ -250,7 +250,7 @@ T* rfts::wr_pool<T>::get(void) noexcept
 
 
 template<typename T>
-void rfts::wr_pool<T>::put(T* e) noexcept
+inline void rfts::wr_pool<T>::put(T* e) noexcept
 {
 #ifdef RFTS_MPSC
 	bool flag = false;

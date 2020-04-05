@@ -76,9 +76,9 @@ struct trans_args//传输参数
 			wr_sge_num	= 1;		//sg列表元素数目
 //		, th_num(ceil((__th_wait_time + __data_handle_time) / 1000000 *
 //				__tfreq * __node_num))
-	inline friend std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept;
-	inline uint64_t get_elesize(void) const noexcept;
-	inline uint32_t get_elenum(void) const noexcept;
+	friend std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept;
+	uint64_t get_elesize(void) const noexcept;
+	uint32_t get_elenum(void) const noexcept;
 };
 
 inline uint32_t trans_args::get_elenum(void) const noexcept
