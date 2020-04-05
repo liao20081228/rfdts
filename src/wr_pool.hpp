@@ -73,7 +73,7 @@ rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 	, __front(0)
 	, __rear(0)
 	, __wrs(new T[__elenum]())
-	, __sg_lists(new ibv_sge [__elenum]())
+	, __sg_lists(new ibv_sge[__elenum]())
 	, __wr_id(0)
 	, __rq(new T*[__rqnum]())
 #ifdef RFTS_MPSC
@@ -85,7 +85,7 @@ rfts::wr_pool<T>::wr_pool(const trans_args& tsas) noexcept
 		errno = EINVAL;
 		PEIE(rfts::wr_pool::wr_pool);
 	}
-	for(uint64_t i = 0; i < __elenum; ++i)
+	for(uint32_t i = 0; i < __elenum; ++i)
 	{
 		__sg_lists[i].addr = (uint64_t)(__addr + i * __elesize);
 		__sg_lists[i].length = __elesize;
