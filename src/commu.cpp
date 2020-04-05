@@ -25,7 +25,7 @@ private:
 	ibv_pd*			__pd;			//保护域
 	ibv_qp*			__qp;			//QP
 	ibv_mr*			__mr;
-	ibv_ah			__ah;			//地址句柄
+	ibv_ah*			__ah;			//地址句柄
 	ibv_device_attr_ex*	__device_attr_ex;	//设备属性和扩展属性
 	ibv_port_attr*		__port_attr;		//端口属性
 private:
@@ -62,6 +62,13 @@ inline rfts::commu<T>::commu(const trans_args& tsas,wr_pool<T>& wrpool, queues<T
 	: __tsas(tsas)
 	, __wrpool(wrpool)
 	, __queues(ques)
+	, __context(nullptr)
+	, __comp_channel(nullptr)
+	, __cq(nullptr)
+	, __pd(nullptr)
+	, __qp(nullptr)
+	, __mr(nullptr)
+	, __ah(nullptr)
 	, __device_attr_ex(new ibv_device_attr_ex)
 	, __port_attr(new ibv_port_attr)
 {
@@ -91,17 +98,20 @@ inline rfts::commu<T>::~commu(void) noexcept
 template<typename T>
 inline void rfts::commu<T>::__create_basic_resource(void) noexcept
 {
-	__pd = ibv_alloc_pd(__context);
-	if (!__pd)
+	if (!(__pd = ibv_alloc_pd(__context)))
 	{
 		PEI(rfts::commu::__create_basic_resource::ibv_alloc_pd);
 		~commu();
 	}
-	__mr = ibv_reg_mr(__pd, __wrpool.get_mrs_addr, __wrpool.get_mrs_length(),
-			IBV_ACCESS_LOCAL_WRITE);
-	if (!__mr)
+	if (!(__mr = ibv_reg_mr(__pd, __wrpool.get_mrs_addr, __wrpool.get_mrs_length(),
+			IBV_ACCESS_LOCAL_WRITE)))
 	{
 		PEI(rfts::commu::__create_basic_resource::ibv_reg_mr);
+		~commu();
+	}
+	if (!(__comp_channel = ibv_create_comp_channel(__context)))
+	{
+		PEI(rfts::commu::__create_basic_resource::ibv_create_comp_channel);
 		~commu();
 	}
 
