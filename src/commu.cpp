@@ -88,6 +88,12 @@ rfts::commu<T>::~commu(void) noexcept
 template<typename T>
 void rfts::commu<T>::__check_mtu(void) const noexcept
 {
+	if (__port_attr->active_mtu < __tsas.get_elesize())
+	{
+		errno = 
+		PEI(rfts::commu::__check_mtu);
+		~commu();
+	}
 }
 
 template<typename T>
