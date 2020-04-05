@@ -76,7 +76,22 @@ struct trans_args//传输参数
 			wr_sge_num	= 1;		//sg列表元素数目
 //		, th_num(ceil((__th_wait_time + __data_handle_time) / 1000000 *
 //				__tfreq * __node_num))
-	friend std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept
+	inline friend std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept;
+	inline uint64_t get_elesize(void)const noexcept
+	uint32_t get_elenum(void) const noexcept;
+};
+
+
+
+
+
+
+
+
+
+
+
+inline std::ostream& operator << (std::ostream& out, trans_args& ref)  noexcept
 	{
 	out << "afreq              : "	<< ref.afreq			<< "\n"
 	    << "tfreq              : "	<< ref.tfreq			<< "\n"
@@ -99,14 +114,5 @@ struct trans_args//传输参数
 		return out;
 	}
 
-	uint64_t get_elesize(void)const noexcept
-	{
-
-	}
-	uint32_t get_elenum(void) const noexcept;
-	{
-
-	}
-};
 }
 #endif /* end of include guard: RFTS_TRANS_ARG_H */
